@@ -75,10 +75,7 @@ public class TelaEvento extends JPanel {
         superior.add(formulario, BorderLayout.CENTER);
         superior.add(botoes, BorderLayout.SOUTH);
 
-        modelo = new DefaultTableModel(
-            new String[]{"Código", "Nome", "Data", "Local", "Capacidade", "Inscritos"},
-            0
-        ) {
+        modelo = new DefaultTableModel(new String[]{"Código", "Nome", "Data", "Local", "Capacidade", "Inscritos"},0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -135,15 +132,11 @@ public class TelaEvento extends JPanel {
 
         } catch (NumberFormatException erro) {
 
-            JOptionPane.showMessageDialog(
-                this, "Código e capacidade devem ser números!"
-            );
+            JOptionPane.showMessageDialog(this, "Código e capacidade devem ser números!");
 
         } catch (Exception erro) {
 
-            JOptionPane.showMessageDialog(
-                this, "Verifique os dados e a data informada (AAAA-MM-DD)!"
-            );
+            JOptionPane.showMessageDialog(this, "Verifique os dados e a data informada (AAAA-MM-DD)!");
         }
     }
 
@@ -167,9 +160,7 @@ public class TelaEvento extends JPanel {
 
         } catch (NumberFormatException erro) {
 
-            JOptionPane.showMessageDialog(
-                this, "Informe um código e uma capacidade válidos!"
-            );
+            JOptionPane.showMessageDialog(this, "Informe um código e uma capacidade válidos!");
         }
     }
 
@@ -179,18 +170,9 @@ public class TelaEvento extends JPanel {
 
         for (Evento evento : eventoController.listarEventos()) {
 
-            int inscritos = inscricaoController.contarInscritos(
-                evento.getCodigo()
-            );
+            int inscritos = inscricaoController.contarInscritos(evento.getCodigo());
 
-            modelo.addRow(new Object[]{
-                evento.getCodigo(),
-                evento.getNome(),
-                evento.getData(),
-                evento.getLocal(),
-                evento.getCapacidadeMaxima(),
-                inscritos
-            });
+            modelo.addRow(new Object[]{evento.getCodigo(), evento.getNome(), evento.getData(), evento.getLocal(), evento.getCapacidadeMaxima(), inscritos});
         }
     }
 }
