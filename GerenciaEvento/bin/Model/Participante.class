@@ -1,1 +1,27 @@
+// Source code is decompiled from a .class file using FernFlower decompiler (from Intellij IDEA).
+package Model;
+
+public class Participante {
+   private int codigo;
+   private String nome;
+   private String contato;
+
+   public Participante(int codigo, String nome, String contato) {
+      this.codigo = codigo;
+      this.nome = nome;
+      this.contato = contato;
+   }
+
+   public int getCodigo() {
+      return this.codigo;
+   }
+
+   public String getNome() {
+      return this.nome;
+   }
+
+   public String getContato() {
+      return this.contato;
+   }
+}
 
