@@ -1,1 +1,36 @@
+// Source code is decompiled from a .class file using FernFlower decompiler (from Intellij IDEA).
+package View;
+
+import Controller.EventoController;
+import Controller.InscricaoController;
+import Controller.ParticipanteController;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JTabbedPane;
+
+public class TelaPrincipal extends JFrame {
+   public TelaPrincipal(EventoController eventoController, ParticipanteController participanteController, InscricaoController inscricaoController) {
+      this.setTitle("Sistema de Gerenciamento de Eventos");
+      this.setSize(1000, 650);
+      this.setDefaultCloseOperation(3);
+      this.setLocationRelativeTo((Component)null);
+      JTabbedPane abas = new JTabbedPane();
+      abas.addTab("Eventos", new TelaEvento(eventoController, inscricaoController));
+      abas.addTab("Participantes", new TelaParticipante(participanteController));
+      abas.addTab("Inscrições", new TelaInscricoes(eventoController, participanteController, inscricaoController));
+      abas.addTab("Relatórios", new TelaRelatorios(eventoController, inscricaoController));
+      this.add(abas, "Center");
+      JLabel titulo = new JLabel("  SISTEMA DE GERENCIAMENTO DE EVENTOS");
+      titulo.setFont(new Font("Arial", 1, 20));
+      titulo.setForeground(Color.WHITE);
+      titulo.setBackground(new Color(25, 45, 80));
+      titulo.setOpaque(true);
+      titulo.setPreferredSize(new Dimension(1000, 65));
+      this.add(titulo, "North");
+   }
+}
 
