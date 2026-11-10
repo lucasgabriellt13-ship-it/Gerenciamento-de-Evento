@@ -151,11 +151,11 @@ Os registros são armazenados em memória utilizando `ArrayList`, conforme as or
 **Grupo de Engenharia de Software — 2º Semestre**
 
 Integrantes:
-- Nome do integrante 1
-- Nome do integrante 2
-- Nome do integrante 3
-- Nome do integrante 4
-- Nome do integrante 5
+- Davi Santana Alves Alecrim
+- Ian Victor Viana de Jesus
+- Icaro Ruan Viana de Jesus
+- Lucas Gabriel Alves de Souza
+- Luiza Silva Freitas Hortelão
 
 ## 🎓 Projeto Acadêmico
 
