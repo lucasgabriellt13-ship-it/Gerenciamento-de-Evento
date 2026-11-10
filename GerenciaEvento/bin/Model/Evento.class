@@ -1,1 +1,45 @@
+// Source code is decompiled from a .class file using FernFlower decompiler (from Intellij IDEA).
+package Model;
+
+import java.time.LocalDate;
+
+public class Evento {
+   private int codigo;
+   private String nome;
+   private LocalDate data;
+   private String local;
+   private int capacidadeMaxima;
+
+   public Evento(int codigo, String nome, LocalDate data, String local, int capacidadeMaxima) {
+      this.codigo = codigo;
+      this.nome = nome;
+      this.data = data;
+      this.local = local;
+      this.capacidadeMaxima = capacidadeMaxima;
+   }
+
+   public int getCodigo() {
+      return this.codigo;
+   }
+
+   public String getNome() {
+      return this.nome;
+   }
+
+   public LocalDate getData() {
+      return this.data;
+   }
+
+   public String getLocal() {
+      return this.local;
+   }
+
+   public int getCapacidadeMaxima() {
+      return this.capacidadeMaxima;
+   }
+
+   public void setCapacidadeMaxima(int capacidadeMaxima) {
+      this.capacidadeMaxima = capacidadeMaxima;
+   }
+}
 
