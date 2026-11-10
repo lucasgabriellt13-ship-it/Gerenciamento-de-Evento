@@ -1,1 +1,90 @@
+// Source code is decompiled from a .class file using FernFlower decompiler (from Intellij IDEA).
+package View;
 
+import Controller.ParticipanteController;
+import Model.Participante;
+import java.awt.BorderLayout;
+import java.awt.Font;
+import java.awt.GridLayout;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
+
+public class TelaParticipante extends JPanel {
+   private ParticipanteController participanteController;
+   private JTextField txtCodigo;
+   private JTextField txtNome;
+   private JTextField txtContato;
+   private DefaultTableModel modelo;
+
+   public TelaParticipante(ParticipanteController participanteController) {
+      this.participanteController = participanteController;
+      this.setLayout(new BorderLayout(10, 10));
+      this.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+      JLabel titulo = new JLabel("Cadastro de Participantes");
+      titulo.setFont(new Font("Arial", 1, 22));
+      this.add(titulo, "North");
+      JPanel formulario = new JPanel(new GridLayout(3, 2, 10, 10));
+      this.txtCodigo = new JTextField();
+      this.txtNome = new JTextField();
+      this.txtContato = new JTextField();
+      formulario.add(new JLabel("Código:"));
+      formulario.add(this.txtCodigo);
+      formulario.add(new JLabel("Nome:"));
+      formulario.add(this.txtNome);
+      formulario.add(new JLabel("Contato:"));
+      formulario.add(this.txtContato);
+      JButton btnCadastrar = new JButton("Cadastrar Participante");
+      btnCadastrar.addActionListener((e) -> this.cadastrarParticipante());
+      JPanel superior = new JPanel(new BorderLayout(10, 10));
+      superior.add(formulario, "Center");
+      superior.add(btnCadastrar, "South");
+      this.modelo = new DefaultTableModel(new String[]{"Código", "Nome", "Contato"}, 0) {
+         public boolean isCellEditable(int row, int column) {
+            return false;
+         }
+      };
+      JTable tabela = new JTable(this.modelo);
+      JScrollPane scroll = new JScrollPane(tabela);
+      JPanel centro = new JPanel(new BorderLayout(10, 10));
+      centro.add(superior, "North");
+      centro.add(scroll, "Center");
+      this.add(centro, "Center");
+      this.atualizarTabela();
+   }
+
+   private void cadastrarParticipante() {
+      try {
+         int codigo = Integer.parseInt(this.txtCodigo.getText());
+         String nome = this.txtNome.getText();
+         String contato = this.txtContato.getText();
+         Participante participante = new Participante(codigo, nome, contato);
+         String mensagem = this.participanteController.cadastrarParticipante(participante);
+         JOptionPane.showMessageDialog(this, mensagem);
+         if (mensagem.equals("Participante cadastrado com sucesso!")) {
+            this.txtCodigo.setText("");
+            this.txtNome.setText("");
+            this.txtContato.setText("");
+            this.atualizarTabela();
+         }
+      } catch (NumberFormatException var6) {
+         JOptionPane.showMessageDialog(this, "O código deve ser um número!");
+      }
+
+   }
+
+   public void atualizarTabela() {
+      this.modelo.setRowCount(0);
+
+      for(Participante participante : this.participanteController.listarParticipantes()) {
+         this.modelo.addRow(new Object[]{participante.getCodigo(), participante.getNome(), participante.getContato()});
+      }
+
+   }
+}
