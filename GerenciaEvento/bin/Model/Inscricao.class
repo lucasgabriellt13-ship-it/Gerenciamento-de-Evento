@@ -1,1 +1,21 @@
+// Source code is decompiled from a .class file using FernFlower decompiler (from Intellij IDEA).
+package Model;
+
+public class Inscricao {
+   private Evento evento;
+   private Participante participante;
+
+   public Inscricao(Evento evento, Participante participante) {
+      this.evento = evento;
+      this.participante = participante;
+   }
+
+   public Evento getEvento() {
+      return this.evento;
+   }
+
+   public Participante getParticipante() {
+      return this.participante;
+   }
+}
 
