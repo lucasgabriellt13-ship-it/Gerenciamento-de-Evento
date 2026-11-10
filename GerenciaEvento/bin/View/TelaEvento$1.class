@@ -1,1 +1,130 @@
+// Source code is decompiled from a .class file using FernFlower decompiler (from Intellij IDEA).
+package View;
+
+import Controller.EventoController;
+import Controller.InscricaoController;
+import Model.Evento;
+import java.awt.BorderLayout;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.time.LocalDate;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
+
+public class TelaEvento extends JPanel {
+   private EventoController eventoController;
+   private InscricaoController inscricaoController;
+   private JTextField txtCodigo;
+   private JTextField txtNome;
+   private JTextField txtData;
+   private JTextField txtLocal;
+   private JTextField txtCapacidade;
+   private JTable tabela;
+   private DefaultTableModel modelo;
+
+   public TelaEvento(EventoController eventoController, InscricaoController inscricaoController) {
+      this.eventoController = eventoController;
+      this.inscricaoController = inscricaoController;
+      this.setLayout(new BorderLayout(10, 10));
+      this.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+      JLabel titulo = new JLabel("Cadastro de Eventos");
+      titulo.setFont(new Font("Arial", 1, 22));
+      this.add(titulo, "North");
+      JPanel formulario = new JPanel(new GridLayout(5, 2, 10, 10));
+      this.txtCodigo = new JTextField();
+      this.txtNome = new JTextField();
+      this.txtData = new JTextField();
+      this.txtLocal = new JTextField();
+      this.txtCapacidade = new JTextField();
+      formulario.add(new JLabel("Código:"));
+      formulario.add(this.txtCodigo);
+      formulario.add(new JLabel("Nome:"));
+      formulario.add(this.txtNome);
+      formulario.add(new JLabel("Data (AAAA-MM-DD):"));
+      formulario.add(this.txtData);
+      formulario.add(new JLabel("Local:"));
+      formulario.add(this.txtLocal);
+      formulario.add(new JLabel("Capacidade máxima:"));
+      formulario.add(this.txtCapacidade);
+      JButton btnCadastrar = new JButton("Cadastrar Evento");
+      JButton btnAlterar = new JButton("Alterar Capacidade");
+      btnCadastrar.addActionListener((e) -> this.cadastrarEvento());
+      btnAlterar.addActionListener((e) -> this.alterarCapacidade());
+      JPanel botoes = new JPanel();
+      botoes.add(btnCadastrar);
+      botoes.add(btnAlterar);
+      JPanel superior = new JPanel(new BorderLayout(10, 10));
+      superior.add(formulario, "Center");
+      superior.add(botoes, "South");
+      this.modelo = new DefaultTableModel(new String[]{"Código", "Nome", "Data", "Local", "Capacidade", "Inscritos"}, 0) {
+         public boolean isCellEditable(int row, int column) {
+            return false;
+         }
+      };
+      this.tabela = new JTable(this.modelo);
+      JScrollPane scroll = new JScrollPane(this.tabela);
+      JPanel centro = new JPanel(new BorderLayout(10, 10));
+      centro.add(superior, "North");
+      centro.add(scroll, "Center");
+      this.add(centro, "Center");
+      this.atualizarTabela();
+   }
+
+   private void cadastrarEvento() {
+      try {
+         int codigo = Integer.parseInt(this.txtCodigo.getText());
+         String nome = this.txtNome.getText();
+         LocalDate data = LocalDate.parse(this.txtData.getText());
+         String local = this.txtLocal.getText();
+         int capacidade = Integer.parseInt(this.txtCapacidade.getText());
+         Evento evento = new Evento(codigo, nome, data, local, capacidade);
+         String mensagem = this.eventoController.cadastrarEvento(evento);
+         JOptionPane.showMessageDialog(this, mensagem);
+         if (mensagem.equals("Evento cadastrado com sucesso!")) {
+            this.txtCodigo.setText("");
+            this.txtNome.setText("");
+            this.txtData.setText("");
+            this.txtLocal.setText("");
+            this.txtCapacidade.setText("");
+            this.atualizarTabela();
+         }
+      } catch (NumberFormatException var8) {
+         JOptionPane.showMessageDialog(this, "Código e capacidade devem ser números!");
+      } catch (Exception var9) {
+         JOptionPane.showMessageDialog(this, "Verifique os dados e a data informada (AAAA-MM-DD)!");
+      }
+
+   }
+
+   private void alterarCapacidade() {
+      try {
+         int codigo = Integer.parseInt(this.txtCodigo.getText());
+         int capacidade = Integer.parseInt(this.txtCapacidade.getText());
+         int inscritos = this.inscricaoController.contarInscritos(codigo);
+         String mensagem = this.eventoController.alterarCapacidade(codigo, capacidade, inscritos);
+         JOptionPane.showMessageDialog(this, mensagem);
+         this.atualizarTabela();
+      } catch (NumberFormatException var5) {
+         JOptionPane.showMessageDialog(this, "Informe um código e uma capacidade válidos!");
+      }
+
+   }
+
+   public void atualizarTabela() {
+      this.modelo.setRowCount(0);
+
+      for(Evento evento : this.eventoController.listarEventos()) {
+         int inscritos = this.inscricaoController.contarInscritos(evento.getCodigo());
+         this.modelo.addRow(new Object[]{evento.getCodigo(), evento.getNome(), evento.getData(), evento.getLocal(), evento.getCapacidadeMaxima(), inscritos});
+      }
+
+   }
+}
 
