@@ -1,1 +1,87 @@
+// Source code is decompiled from a .class file using FernFlower decompiler (from Intellij IDEA).
+package Controller;
+
+import Model.Evento;
+import Model.Inscricao;
+import Model.Participante;
+import java.util.ArrayList;
+
+public class InscricaoController {
+   private ArrayList<Inscricao> inscricoes = new ArrayList();
+   private EventoController eventoController;
+   private ParticipanteController participanteController;
+
+   public InscricaoController(EventoController eventoController, ParticipanteController participanteController) {
+      this.eventoController = eventoController;
+      this.participanteController = participanteController;
+   }
+
+   public String realizarIncricao(int codigoEvento, int codigoParticipante) {
+      Evento evento = this.eventoController.buscarEventoPorCodigo(codigoParticipante);
+      Participante participante = this.participanteController.buscarParticipantePorCodigo(codigoParticipante);
+      if (evento == null) {
+         return "Evento nao encontrado";
+      } else if (participante == null) {
+         return "Integrante nao encontrado";
+      } else {
+         for(Inscricao inscricao : this.inscricoes) {
+            if (inscricao.getEvento().getCodigo() == codigoEvento && inscricao.getParticipante().getCodigo() == codigoParticipante) {
+               return "Integrante ja inscrito neste evento";
+            }
+         }
+
+         if (this.contarInscritos(codigoEvento) >= evento.getCapacidadeMaxima()) {
+            return "Nao existem mais vagas disponiveis";
+         } else {
+            Inscricao novaInscricao = new Inscricao(evento, participante);
+            this.inscricoes.add(novaInscricao);
+            return "Incricao realizada";
+         }
+      }
+   }
+
+   public int contarInscritos(int codigoEvento) {
+      int quantidade = 0;
+
+      for(Inscricao inscricao : this.inscricoes) {
+         if (inscricao.getEvento().getCodigo() == codigoEvento) {
+            ++quantidade;
+         }
+      }
+
+      return quantidade;
+   }
+
+   public int calcularVagasDisponiveis(int codigoEvento) {
+      Evento evento = this.eventoController.buscarEventoPorCodigo(codigoEvento);
+      return evento == null ? -1 : evento.getCapacidadeMaxima() - this.contarInscritos(codigoEvento);
+   }
+
+   public String cancelarInscricao(int codigoEvento, int codigoParticipante) {
+      for(Inscricao inscricao : this.inscricoes) {
+         if (inscricao.getEvento().getCodigo() == codigoEvento && inscricao.getParticipante().getCodigo() == codigoParticipante) {
+            this.inscricoes.remove(inscricao);
+            return "Inscrição cancelada com sucesso!";
+         }
+      }
+
+      return "Inscrição não encontrada!";
+   }
+
+   public ArrayList<Inscricao> listarInscricoesPorEvento(int codigoEvento) {
+      ArrayList<Inscricao> resultado = new ArrayList();
+
+      for(Inscricao inscricao : this.inscricoes) {
+         if (inscricao.getEvento().getCodigo() == codigoEvento) {
+            resultado.add(inscricao);
+         }
+      }
+
+      return resultado;
+   }
+
+   public ArrayList<Inscricao> listarTodasInscricoes() {
+      return new ArrayList(this.inscricoes);
+   }
+}
 
