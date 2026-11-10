@@ -1,1 +1,109 @@
+// Source code is decompiled from a .class file using FernFlower decompiler (from Intellij IDEA).
+package View;
+
+import Controller.EventoController;
+import Controller.InscricaoController;
+import Model.Evento;
+import Model.Inscricao;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridLayout;
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+
+public class TelaRelatorios extends JPanel {
+   private EventoController eventoController;
+   private InscricaoController inscricaoController;
+   private JComboBox<Evento> comboEventos;
+   private JLabel lblInscritos;
+   private JLabel lblVagas;
+   private JLabel lblCapacidade;
+   private DefaultTableModel modelo;
+
+   public TelaRelatorios(EventoController eventoController, InscricaoController inscricaoController) {
+      this.eventoController = eventoController;
+      this.inscricaoController = inscricaoController;
+      this.setLayout(new BorderLayout(10, 10));
+      this.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+      JLabel titulo = new JLabel("Relatórios de Eventos");
+      titulo.setFont(new Font("Arial", 1, 22));
+      this.add(titulo, "North");
+      this.comboEventos = new JComboBox();
+      this.comboEventos.setRenderer(new DefaultListCellRenderer() {
+         public Component getListCellRendererComponent(JList<?> lista, Object valor, int indice, boolean selecionado, boolean foco) {
+            super.getListCellRendererComponent(lista, valor, indice, selecionado, foco);
+            if (valor instanceof Evento) {
+               this.setText(((Evento)valor).getNome());
+            }
+
+            return this;
+         }
+      });
+      JButton btnGerar = new JButton("Gerar Relatório");
+      btnGerar.addActionListener((e) -> this.gerarRelatorio());
+      JPanel selecao = new JPanel(new FlowLayout(0));
+      selecao.add(new JLabel("Selecione o evento:"));
+      selecao.add(this.comboEventos);
+      selecao.add(btnGerar);
+      this.lblInscritos = new JLabel("Inscritos: 0");
+      this.lblVagas = new JLabel("Vagas disponíveis: 0");
+      this.lblCapacidade = new JLabel("Capacidade máxima: 0");
+      JPanel indicadores = new JPanel(new GridLayout(1, 3, 10, 10));
+      indicadores.add(this.lblInscritos);
+      indicadores.add(this.lblVagas);
+      indicadores.add(this.lblCapacidade);
+      this.modelo = new DefaultTableModel(new String[]{"Código", "Nome", "Contato"}, 0) {
+         public boolean isCellEditable(int row, int column) {
+            return false;
+         }
+      };
+      JTable tabela = new JTable(this.modelo);
+      JScrollPane scroll = new JScrollPane(tabela);
+      JPanel centro = new JPanel(new BorderLayout(10, 10));
+      centro.add(selecao, "North");
+      centro.add(indicadores, "Center");
+      centro.add(scroll, "South");
+      this.add(centro, "Center");
+      this.atualizarEventos();
+   }
+
+   private void atualizarEventos() {
+      this.comboEventos.removeAllItems();
+
+      for(Evento evento : this.eventoController.listarEventos()) {
+         this.comboEventos.addItem(evento);
+      }
+
+   }
+
+   private void gerarRelatorio() {
+      Evento evento = (Evento)this.comboEventos.getSelectedItem();
+      if (evento == null) {
+         JOptionPane.showMessageDialog(this, "Nenhum evento cadastrado!");
+      } else {
+         int quantidade = this.inscricaoController.contarInscritos(evento.getCodigo());
+         int vagas = this.inscricaoController.calcularVagasDisponiveis(evento.getCodigo());
+         this.lblInscritos.setText("Inscritos: " + quantidade);
+         this.lblVagas.setText("Vagas disponíveis: " + vagas);
+         this.lblCapacidade.setText("Capacidade máxima: " + evento.getCapacidadeMaxima());
+         this.modelo.setRowCount(0);
+
+         for(Inscricao inscricao : this.inscricaoController.listarInscricoesPorEvento(evento.getCodigo())) {
+            this.modelo.addRow(new Object[]{inscricao.getParticipante().getCodigo(), inscricao.getParticipante().getNome(), inscricao.getParticipante().getContato()});
+         }
+
+      }
+   }
+}
 
