@@ -157,7 +157,7 @@ Integrantes:
 - Lucas Gabriel Alves de Souza
 - Luiza Silva Freitas Hortelão
 
-##🧑‍🏫 **Orientador**
+## 🧑‍🏫 **Orientador**
 - Hudson Neves
 
 ## 🎓 Projeto Acadêmico
