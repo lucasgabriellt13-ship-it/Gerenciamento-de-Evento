@@ -1,1 +1,46 @@
+// Source code is decompiled from a .class file using FernFlower decompiler (from Intellij IDEA).
+package Controller;
+
+import Model.Participante;
+import java.util.ArrayList;
+
+public class ParticipanteController {
+   private ArrayList<Participante> participantes = new ArrayList();
+
+   public ParticipanteController() {
+   }
+
+   public String cadastrarParticipante(Participante participante) {
+      if (participante == null) {
+         return "Participante Invalido";
+      } else if (participante.getNome() != null && !participante.getNome().trim().isEmpty()) {
+         if (participante.getContato() != null && !participante.getContato().trim().isEmpty()) {
+            if (this.buscarParticipantePorCodigo(participante.getCodigo()) != null) {
+               return "Ja existe um Integrante com esse codigo";
+            } else {
+               this.participantes.add(participante);
+               return "Integrante cadastrado com sucesso";
+            }
+         } else {
+            return "Informe o contato do Integrante";
+         }
+      } else {
+         return "Informe o nome do Integrante";
+      }
+   }
+
+   public ArrayList<Participante> listarParticipantes() {
+      return new ArrayList(this.participantes);
+   }
+
+   public Participante buscarParticipantePorCodigo(int codigo) {
+      for(Participante participante : this.participantes) {
+         if (participante.getCodigo() == codigo) {
+            return participante;
+         }
+      }
+
+      return null;
+   }
+}
 
