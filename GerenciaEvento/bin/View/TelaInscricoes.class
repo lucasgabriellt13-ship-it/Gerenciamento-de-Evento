@@ -1,1 +1,149 @@
+// Source code is decompiled from a .class file using FernFlower decompiler (from Intellij IDEA).
+package View;
+
+import Controller.EventoController;
+import Controller.InscricaoController;
+import Controller.ParticipanteController;
+import Model.Evento;
+import Model.Inscricao;
+import Model.Participante;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.GridLayout;
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+
+public class TelaInscricoes extends JPanel {
+   private EventoController eventoController;
+   private ParticipanteController participanteController;
+   private InscricaoController inscricaoController;
+   private JComboBox<Evento> comboEventos;
+   private JComboBox<Participante> comboParticipantes;
+   private DefaultTableModel modelo;
+   private JTable tabela;
+
+   public TelaInscricoes(EventoController eventoController, ParticipanteController participanteController, InscricaoController inscricaoController) {
+      this.eventoController = eventoController;
+      this.participanteController = participanteController;
+      this.inscricaoController = inscricaoController;
+      this.setLayout(new BorderLayout(10, 10));
+      this.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+      JLabel titulo = new JLabel("Gerenciamento de Inscrições");
+      titulo.setFont(new Font("Arial", 1, 22));
+      this.add(titulo, "North");
+      JPanel formulario = new JPanel(new GridLayout(2, 2, 10, 10));
+      this.comboEventos = new JComboBox();
+      this.comboParticipantes = new JComboBox();
+      this.comboEventos.setRenderer(new DefaultListCellRenderer() {
+         public Component getListCellRendererComponent(JList<?> lista, Object valor, int indice, boolean selecionado, boolean foco) {
+            super.getListCellRendererComponent(lista, valor, indice, selecionado, foco);
+            if (valor instanceof Evento) {
+               this.setText(((Evento)valor).getNome());
+            }
+
+            return this;
+         }
+      });
+      this.comboParticipantes.setRenderer(new DefaultListCellRenderer() {
+         public Component getListCellRendererComponent(JList<?> lista, Object valor, int indice, boolean selecionado, boolean foco) {
+            super.getListCellRendererComponent(lista, valor, indice, selecionado, foco);
+            if (valor instanceof Participante) {
+               this.setText(((Participante)valor).getNome());
+            }
+
+            return this;
+         }
+      });
+      formulario.add(new JLabel("Selecione o evento:"));
+      formulario.add(this.comboEventos);
+      formulario.add(new JLabel("Selecione o participante:"));
+      formulario.add(this.comboParticipantes);
+      JButton btnInscrever = new JButton("Realizar Inscrição");
+      JButton btnCancelar = new JButton("Cancelar Inscrição");
+      btnInscrever.addActionListener((e) -> this.realizarInscricao());
+      btnCancelar.addActionListener((e) -> this.cancelarInscricao());
+      JPanel botoes = new JPanel();
+      botoes.add(btnInscrever);
+      botoes.add(btnCancelar);
+      JPanel superior = new JPanel(new BorderLayout(10, 10));
+      superior.add(formulario, "Center");
+      superior.add(botoes, "South");
+      this.modelo = new DefaultTableModel(new String[]{"Código Evento", "Evento", "Código Participante", "Participante"}, 0) {
+         public boolean isCellEditable(int row, int column) {
+            return false;
+         }
+      };
+      this.tabela = new JTable(this.modelo);
+      JScrollPane scroll = new JScrollPane(this.tabela);
+      JPanel centro = new JPanel(new BorderLayout(10, 10));
+      centro.add(superior, "North");
+      centro.add(scroll, "Center");
+      this.add(centro, "Center");
+      this.atualizarCombos();
+      this.atualizarTabela();
+   }
+
+   private void realizarInscricao() {
+      Evento evento = (Evento)this.comboEventos.getSelectedItem();
+      Participante participante = (Participante)this.comboParticipantes.getSelectedItem();
+      if (evento != null && participante != null) {
+         String mensagem = this.inscricaoController.realizarIncricao(evento.getCodigo(), participante.getCodigo());
+         JOptionPane.showMessageDialog(this, mensagem);
+         this.atualizarTabela();
+      } else {
+         JOptionPane.showMessageDialog(this, "Cadastre um evento e um participante primeiro!");
+      }
+   }
+
+   private void cancelarInscricao() {
+      int linha = this.tabela.getSelectedRow();
+      if (linha == -1) {
+         JOptionPane.showMessageDialog(this, "Selecione uma inscrição na tabela!");
+      } else {
+         int codigoEvento = (Integer)this.modelo.getValueAt(linha, 0);
+         int codigoParticipante = (Integer)this.modelo.getValueAt(linha, 2);
+         int resposta = JOptionPane.showConfirmDialog(this, "Deseja realmente cancelar esta inscrição?", "Confirmar cancelamento", 0);
+         if (resposta == 0) {
+            String mensagem = this.inscricaoController.cancelarInscricao(codigoEvento, codigoParticipante);
+            JOptionPane.showMessageDialog(this, mensagem);
+            this.atualizarTabela();
+         }
+
+      }
+   }
+
+   private void atualizarCombos() {
+      this.comboEventos.removeAllItems();
+      this.comboParticipantes.removeAllItems();
+
+      for(Evento evento : this.eventoController.listarEventos()) {
+         this.comboEventos.addItem(evento);
+      }
+
+      for(Participante participante : this.participanteController.listarParticipantes()) {
+         this.comboParticipantes.addItem(participante);
+      }
+
+   }
+
+   public void atualizarTabela() {
+      this.modelo.setRowCount(0);
+
+      for(Inscricao inscricao : this.inscricaoController.listarTodasInscricoes()) {
+         this.modelo.addRow(new Object[]{inscricao.getEvento().getCodigo(), inscricao.getEvento().getNome(), inscricao.getParticipante().getCodigo(), inscricao.getParticipante().getNome()});
+      }
+
+      this.atualizarCombos();
+   }
+}
 
