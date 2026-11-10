@@ -157,6 +157,9 @@ Integrantes:
 - Lucas Gabriel Alves de Souza
 - Luiza Silva Freitas Hortelão
 
+##🧑‍🏫 **Orientador**
+- Hudson Neves
+
 ## 🎓 Projeto Acadêmico
 
 Desenvolvido para a disciplina de Engenharia de Software, com o propósito de aplicar conceitos de programação orientada a objetos, arquitetura MVC, interfaces gráficas e regras de negócio utilizando Java.
