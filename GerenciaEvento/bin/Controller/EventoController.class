@@ -1,1 +1,63 @@
+// Source code is decompiled from a .class file using FernFlower decompiler (from Intellij IDEA).
+package Controller;
 
+import Model.Evento;
+import java.util.ArrayList;
+
+public class EventoController {
+   private ArrayList<Evento> eventos = new ArrayList();
+
+   public EventoController() {
+   }
+
+   public String cadastrarEvento(Evento evento) {
+      if (evento == null) {
+         return "Evento inválido!";
+      } else if (evento.getNome() != null && !evento.getNome().trim().isEmpty()) {
+         if (evento.getLocal() != null && !evento.getLocal().trim().isEmpty()) {
+            if (evento.getData() == null) {
+               return "Informe a data do evento!";
+            } else if (evento.getCapacidadeMaxima() < 0) {
+               return "A capacidade não pode ser negativa!";
+            } else if (this.buscarEventoPorCodigo(evento.getCodigo()) != null) {
+               return "Já existe um evento com esse código!";
+            } else {
+               this.eventos.add(evento);
+               return "Evento cadastrado com sucesso!";
+            }
+         } else {
+            return "Informe o local do evento!";
+         }
+      } else {
+         return "Informe o nome do evento!";
+      }
+   }
+
+   public ArrayList<Evento> listarEventos() {
+      return new ArrayList(this.eventos);
+   }
+
+   public Evento buscarEventoPorCodigo(int codigo) {
+      for(Evento evento : this.eventos) {
+         if (evento.getCodigo() == codigo) {
+            return evento;
+         }
+      }
+
+      return null;
+   }
+
+   public String alterarCapacidade(int codigo, int novaCapacidade, int inscritos) {
+      Evento evento = this.buscarEventoPorCodigo(codigo);
+      if (evento == null) {
+         return "Evento não encontrado!";
+      } else if (novaCapacidade < 0) {
+         return "A capacidade não pode ser negativa!";
+      } else if (novaCapacidade < inscritos) {
+         return "A capacidade não pode ser menor que o número de inscritos!";
+      } else {
+         evento.setCapacidadeMaxima(novaCapacidade);
+         return "Capacidade alterada com sucesso!";
+      }
+   }
+}
